@@ -6,7 +6,8 @@
 #define MOVE_LEFT     ('L')
 #define MOVE_RIGHT    ('R')
 
-#define SPEED (100)
+#define SPEED (120)
+#define SPEED_TURN (SPEED)
 
 void ManualControl::move(dmoto robot, char charPressed) {
 	if(MOVE_FORWARD == charPressed) {
@@ -16,10 +17,10 @@ void ManualControl::move(dmoto robot, char charPressed) {
 		robot.Backward(SPEED);
 	}
 	if(MOVE_LEFT == charPressed) {
-		robot.Right(SPEED,SPEED);
+		robot.Right(SPEED_TURN,SPEED_TURN);
 	}
 	if(MOVE_RIGHT == charPressed) {
-		robot.Left(SPEED,SPEED);
+		robot.Left(SPEED_TURN,SPEED_TURN);
 	}
 	if(MOVE_STOP == charPressed) {
 		robot.Stop();

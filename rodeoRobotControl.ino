@@ -22,9 +22,9 @@
 SoftwareSerial myBlue(0, 1); // RX, TX pins of Arduino Nano. 
 
 dmoto robot;
-Line line;
+/*Line line;
 Light light;
-Obstacle obstacle;
+Obstacle obstacle;*/
 ManualControl manual;
 
 int runningMode = MODE_IDLE;
@@ -39,11 +39,8 @@ void setup() {
 	robot.pinSet();
 	robot.Stop();
 
-  pinMode(m1Dir, OUTPUT);
-  pinMode(m2Dir, OUTPUT);
-  pinMode(m1En, OUTPUT);
-  pinMode(m2En, OUTPUT);
-  
+ pinMode(btEnablePin,OUTPUT); 
+ digitalWrite(btEnablePin,LOW);
 }
 
 void buzzWithParams(int freq_Hz, int duration_ms) {
@@ -53,16 +50,19 @@ void buzzWithParams(int freq_Hz, int duration_ms) {
 }
 
 void buzz() {
-	buzzWithParams(5000, 1000);
+	buzzWithParams(2000, 1000);
 }
 
 void loop() {
   delay(10);
-	if(myBlue.available() > 0){ // Checks whether data is coming from the bluetooth
+  charPressed = NO_COMMAND;
+  if(myBlue.available() > 0){ // Checks whether data is coming from the bluetooth
 		charPressed = myBlue.read(); // Reads the data from bluetooth
-		if (NO_COMMAND == charPressed) {
+   runningMode = MODE_MANUAL_CONTROL; //TODO
+    /*if (NO_COMMAND == charPressed) {
 			runningMode = MODE_IDLE;
-		}if (FOLLOW_LINE == charPressed) {
+		}
+		if (FOLLOW_LINE == charPressed) {
 			runningMode = MODE_FOLLOW_LINE;
 		}
 		if (FOLLOW_LIGHT == charPressed) {
@@ -73,21 +73,22 @@ void loop() {
 		}
 		if (MANUAL_CONTROL == charPressed) {
 			runningMode = MODE_MANUAL_CONTROL;
-		}
-		if(runningMode != prevRunningMode) {
+		}*/
+		/*if(runningMode != prevRunningMode) {
 			robot.Stop();
 			buzz();			
 			prevRunningMode = runningMode;
-		}
+		}*/
 	}
 
-  if(MODE_IDLE == runningMode) {
+  /*if(MODE_IDLE == runningMode) {
     digitalWrite(ledPin, HIGH);
     buzz();
     digitalWrite(ledPin, LOW);
     delay(1000);
-  }
-	if(MODE_FOLLOW_LINE == runningMode) {
+  }*/
+  
+	/*if(MODE_FOLLOW_LINE == runningMode) {
 		line.follow(robot);
 	}
 	if(MODE_FOLLOW_LIGHT == runningMode) {
@@ -95,14 +96,17 @@ void loop() {
 	}
 	if(MODE_AVOID_OBSTACLE == runningMode) {
 		obstacle.avoid(robot);
-	}
+	}*/
 	if(MODE_MANUAL_CONTROL == runningMode) {
-		if(MODE_MANUAL_CONTROL != charPressed) {//After robot is set to manual mode, a direction char must have been pressed 
-			if(charPressed != prevCharPressed) {
-				buzzWithParams(1500, 10);
-				prevCharPressed = charPressed;
-			}
-			manual.move(robot, charPressed);  
-		}
-	}
+    if(NO_COMMAND != charPressed) {
+		  /*if(MODE_MANUAL_CONTROL != charPressed) {//After robot is set to manual mode, a direction char must have been pressed 
+			  if(charPressed != prevCharPressed) {
+				  buzzWithParams(1500, 10);
+				  prevCharPressed = charPressed;
+			  }*/                   
+			  manual.move(robot, charPressed);  
+		  }
+    } else {
+      robot.Stop();
+    }
 }
